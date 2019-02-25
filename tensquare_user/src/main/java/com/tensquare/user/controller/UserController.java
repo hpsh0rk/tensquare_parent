@@ -1,4 +1,5 @@
 package com.tensquare.user.controller;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import com.tensquare.user.service.UserService;
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import util.JwtUtil;
 
 import javax.jws.soap.SOAPBinding;
 
@@ -36,6 +38,9 @@ public class UserController {
 
 	@Autowired
     private RedisTemplate redisTemplate;
+
+	@Autowired
+	private JwtUtil jwtUtil;
 	
 	/**
 	 * 查询全部数据
@@ -121,5 +126,19 @@ public class UserController {
     public Result regist(@PathVariable String code, @RequestBody User user){
         userService.add(user,code);
         return new Result(true,StatusCode.OK,"注册成功");
+    }
+
+    @RequestMapping(value = "/login",method = RequestMethod.POST)
+	public Result login(@RequestBody User user){
+        user = userService.login(user);
+        if (user!=null) {
+			String token = jwtUtil.createJWT(user.getId(),user.getNickname(),"user");
+			Map map = new HashMap();
+			map.put("token",token);
+			map.put("name",user.getNickname());
+			map.put("avatar",user.getAvatar());
+            return new Result(true,StatusCode.OK,"登陆成功",map);
+        }
+        return new Result(false,StatusCode.ERROR,"登陆失败");
     }
 }
