@@ -2,6 +2,7 @@ package com.tensquare.qa.controller;
 
 import java.util.Map;
 
+import com.tensquare.qa.client.BaseClient;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,13 @@ public class ProblemController {
     @Autowired
     private HttpServletRequest request;
 
+    @Autowired
+    private BaseClient baseClient;
+
+    @RequestMapping(value = "/label/{labelId}", method = RequestMethod.GET)
+    public Result findLabelById(@PathVariable("labelId") String labelId) {
+        return baseClient.findById(labelId);
+    }
 
     @RequestMapping(value = "/newlist/{labelid}/{page}/{size}", method = RequestMethod.GET)
     public Result newlist(@PathVariable String labelid, @PathVariable int page, @PathVariable int size) {
