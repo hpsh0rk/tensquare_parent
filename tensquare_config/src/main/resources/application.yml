@@ -1,0 +1,17 @@
+server:
+  port: 12000
+spring:
+  application:
+    name: tensquare-config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/hpsh0rk/tensquare_dev.git
+  redis:
+    host: 192.168.148.137
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
